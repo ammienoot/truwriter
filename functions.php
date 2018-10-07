@@ -621,6 +621,50 @@ function truwriter_register_theme_customizer( $wp_customize ) {
 		    )
 	    )
 	);
+	
+    // setting for URL label
+	$wp_customize->add_setting( 'item_URL', array(
+		 'default'           => __( 'The URL', 'radcliffe'),
+		 'type' => 'theme_mod',
+		 'sanitize_callback' => 'sanitize_text'
+	) );
+	
+	// Control for URL label
+	$wp_customize->add_control( new WP_Customize_Control(
+	    $wp_customize,
+		'item_URL',
+		    array(
+		        'label'    => __( 'URL Label', 'radcliffe'),
+		        'priority' => 18,
+		        'description' => __( '' ),
+		        'section'  => 'write_form',
+		        'settings' => 'item_URL',
+		        'type'     => 'text'
+		    )
+	    )
+	);
+	
+	// setting for URL description
+	$wp_customize->add_setting( 'item_URL_prompt', array(
+		 'default'           => __( 'Blat the URL in here', 'radcliffe'),
+		 'type' => 'theme_mod',
+		 'sanitize_callback' => 'sanitize_text'
+	) );
+	
+	// Control for URL description
+	$wp_customize->add_control( new WP_Customize_Control(
+	    $wp_customize,
+		'item_URL_prompt',
+		    array(
+		        'label'    => __( 'URL Prompt', 'radcliffe'),
+		        'priority' => 19,
+		        'description' => __( '' ),
+		        'section'  => 'write_form',
+		        'settings' => 'item_URL_prompt',
+		        'type'     => 'textarea'
+		    )
+	    )
+	);
 
 	// setting for byline label
 	$wp_customize->add_setting( 'item_byline', array(
@@ -635,7 +679,7 @@ function truwriter_register_theme_customizer( $wp_customize ) {
 		'item_byline',
 		    array(
 		        'label'    => __( 'Author Byline Label', 'radcliffe'),
-		        'priority' => 18,
+		        'priority' => 20,
 		        'description' => __( '' ),
 		        'section'  => 'write_form',
 		        'settings' => 'item_byline',
@@ -657,7 +701,7 @@ function truwriter_register_theme_customizer( $wp_customize ) {
 		'item_byline_prompt',
 		    array(
 		        'label'    => __( 'Author Byline Prompt', 'radcliffe'),
-		        'priority' => 19,
+		        'priority' => 21,
 		        'description' => __( 'Directions for the author entry field' ),
 		        'section'  => 'write_form',
 		        'settings' => 'item_byline_prompt',
@@ -680,7 +724,7 @@ function truwriter_register_theme_customizer( $wp_customize ) {
 		'item_writing_area',
 		    array(
 		        'label'    => __( 'Writing Area Label', 'radcliffe'),
-		        'priority' => 20,
+		        'priority' => 22,
 		        'description' => __( '' ),
 		        'section'  => 'write_form',
 		        'settings' => 'item_writing_area',
@@ -702,7 +746,7 @@ function truwriter_register_theme_customizer( $wp_customize ) {
 		'item_writing_area_prompt',
 		    array(
 		        'label'    => __( 'Writing Area Prompt', 'radcliffe'),
-		        'priority' => 22,
+		        'priority' => 23,
 		        'description' => __( 'Directions for the main writing entry field' ),
 		        'section'  => 'write_form',
 		        'settings' => 'item_writing_area_prompt',
@@ -1104,6 +1148,22 @@ function truwriter_form_item_title_prompt() {
 	 	echo get_theme_mod( 'item_title_prompt');
 	 }	else {
 	 	echo 'A good title is important! Create an eye-catching title for your story, one that would make a person who sees it want to stop whatever they are doing and read it..';
+	 }
+}
+
+function truwriter_form_item_URL() {
+	 if ( get_theme_mod( 'item_URL') != "" ) {
+	 	echo get_theme_mod( 'item_URL');
+	 }	else {
+	 	echo 'The URL';
+	 }
+}
+
+function truwriter_form_item_URL_prompt() {
+	 if ( get_theme_mod( 'item_URL_prompt') != "" ) {
+	 	echo get_theme_mod( 'item_URL_prompt');
+	 }	else {
+	 	echo 'Blat the URL in here';
 	 }
 }
 

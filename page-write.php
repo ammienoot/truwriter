@@ -35,7 +35,7 @@ if ( ! ($wid and $tk) ) {
 // default welcome message
 $feedback_msg = truwriter_form_default_prompt();
 
-$wTitle = $wEmail = $wFooter = $wTags = $wNotes = $wLicense = $firstview = '';
+$wTitle = $wURL = $wEmail = $wFooter = $wTags = $wNotes = $wLicense = $firstview = '';
 $wAuthor = "Anonymous";
 $wText =  truwriter_option('def_text'); // pre-fill the writing area
 $wCats = array( truwriter_option('def_cat')); // preload default category
@@ -83,6 +83,7 @@ if ( $wid and $tk ) {
 		$writing = get_post( $wid );
 
 		$wTitle = get_the_title( $wid );
+		$wURL = get_post_meta( $wid, 'wURL', 1);
 		$wAuthor =  get_post_meta( $wid, 'wAuthor', 1 );
 		$wEmail =  get_post_meta( $wid, 'wEmail', 1 );
 		$wText = $writing->post_content; 
@@ -128,6 +129,7 @@ if ( isset( $_POST['truwriter_form_make_submitted'] ) && wp_verify_nonce( $_POST
  
  		// grab the variables from the form
  		$wTitle = 					sanitize_text_field( stripslashes( $_POST['wTitle'] ) );
+ 		$wURL = 					sanitize_text_field( $_POST['wURL'] );
  		$wAuthor = 					( isset ($_POST['wAuthor'] ) ) ? sanitize_text_field( stripslashes($_POST['wAuthor']) ) : 'Anonymous';
  		$wEmail = 					sanitize_text_field( $_POST['wEmail'] );			
  		$wTags = 					sanitize_text_field( $_POST['wTags'] );	
@@ -144,7 +146,9 @@ if ( isset( $_POST['truwriter_form_make_submitted'] ) && wp_verify_nonce( $_POST
  		// let's do some validation, store an error message for each problem found
 
  		
- 		if ( $wTitle == '' ) $errors[] = '<strong>Title Missing</strong> - please enter an interesting title.'; 	
+ 		if ( $wTitle == '' ) $errors[] = '<strong>Title Missing</strong> - please enter the title of the site.'; 
+ 		
+ 	    if ( $wURL == '' ) $errors[] = '<strong>URL Missing</strong> - please enter the URL of the site you are describing.'; 
  		
  		if ( strlen($wText) < 8 ) $errors[] = '<strong>Missing text?</strong> - that\'s not much text, eh?';
  		
@@ -193,6 +197,9 @@ if ( isset( $_POST['truwriter_form_make_submitted'] ) && wp_verify_nonce( $_POST
 			
 				// insert as a new post
 				$post_id = wp_insert_post( $w_information );
+				
+				// store the URL as post meta data
+				add_post_meta($post_id, 'wURL', $wURL);
 				
 				// store the author as post meta data
 				add_post_meta($post_id, 'wAuthor', $wAuthor);
@@ -350,6 +357,9 @@ if ( isset( $_POST['truwriter_form_make_submitted'] ) && wp_verify_nonce( $_POST
 
 				// store the author's name
 				update_post_meta($post_id, 'wAuthor', $wAuthor);
+				
+				// store the URL
+				update_post_meta($post_id, 'wURL', $wURL);
 															
 				// store the header image caption as post metadata
 				update_post_meta($post_id, 'wHeaderCaption', $wHeaderImageCaption);
@@ -468,12 +478,18 @@ if ( isset( $_POST['truwriter_form_make_submitted'] ) && wp_verify_nonce( $_POST
 					<p><?php truwriter_form_item_title_prompt()?></p>
 					<input type="text" name="wTitle" id="wTitle" class="required" value="<?php echo $wTitle; ?>" tabindex="1" />
 				</fieldset>	
-			
+				
+				<!-- AMS: Adding in another optional field to capture a URL -->
+				<fieldset>
+					<label for="wURL"><?php truwriter_form_item_URL() ?></label><br />
+					<p><?php truwriter_form_item_URL_prompt()?></p>
+					<input type="text" name="wURL" id="wURL" class="required" value="<?php echo $wURL; ?>" tabindex="2" />
+				</fieldset>
 
 				<fieldset>
 					<label for="wAuthor"><?php truwriter_form_item_byline() ?></label><br />
 					<p><?php truwriter_form_item_byline_prompt() ?></p>
-					<input type="text" name="wAuthor" id="wAuthor" class="required" value="<?php echo $wAuthor; ?>" tabindex="2" />
+					<input type="text" name="wAuthor" id="wAuthor" class="required" value="<?php echo $wAuthor; ?>" tabindex="3" />
 				</fieldset>	
 				
 				<fieldset>
@@ -484,19 +500,18 @@ if ( isset( $_POST['truwriter_form_make_submitted'] ) && wp_verify_nonce( $_POST
 <a class="video fancybox.iframe" href="<?php echo get_stylesheet_directory_uri()?>/includes/edit-help.html">editing tips</a>.</p>
 						<?php
 						// set up for inserting the WP post editor
-						$settings = array( 'textarea_name' => 'wText', 'editor_height' => '400',  'tabindex'  => "3");
+						$settings = array( 'textarea_name' => 'wText', 'editor_height' => '400',  'tabindex'  => "4");
 
 						wp_editor(  stripslashes( $wText ), 'wtext', $settings );
 						?>
 				</fieldset>
-
+				
 				<fieldset>
 						<label for="wFooter"><?php truwriter_form_item_footer() ?></label>						
 						<p><?php truwriter_form_item_footer_prompt() ?></p>
 						<textarea name="wFooter" id="wFooter" rows="15"  tabindex="4"><?php echo stripslashes( $wFooter );?></textarea>
-				</fieldset>
+                </fieldset>
 
-				
 				<fieldset>
 					<label for="headerImage"><?php truwriter_form_item_header_image() ?></label>
 					

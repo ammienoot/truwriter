@@ -54,14 +54,15 @@
 					<h2 class="post-title"><?php the_title(); ?></h2>
 					
 					<p class="theauthor"><?php $wAuthor=  get_post_meta( $post->ID, 'wAuthor', 1 ); echo twitternameify( $wAuthor );?></p>
+		            
+		            <?php $wURL = get_post_meta( $post->ID, 'wURL', 1 ); if ($wURL) echo '<p class="theauthor">Review URL: ' . make_clickable( $wURL ) . '</p>';?>
 					
-				
 				</div> <!-- /post-header-inner section-inner -->
 														
 			</div> <!-- /post-header section -->
 			    
 		    <div class="post-content section-inner thin">
-		    
+		        
 		    	<?php the_content(); ?>
 		    	
 		    	<hr />
